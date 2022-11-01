@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <title>Home Details</title>
+    <meta name="description" content="The list of Homes in the Living Earth Project">
+    <meta name="keywords" content="Homes Living Earth">
+</head>
+
+<body>
+    <form>
+        
+        <label for="HouseID">ID</label><br>
+        <input type="text" id ="HouseID" disabled="true"><br><br>
+        
+        <label for="HouseSize">Size (SQFT)</label><br>
+        <input type="text" id ="HouseSize"><br><br>
+        
+        <label for="GarageUpgrade">Optional Garage Upgrade</label>
+        <select id="GarageUpgrade">
+            <option value="True">Yes</option>
+            <option value="False">No</option>
+        </select><br><br>
+        
+
+        <label for="PatioUpgrade">Optional Patio Upgrade</label>
+        <select type="dropdown" id="PatioUpgrade">
+            <option value="True">Yes</option>
+            <option value="False">No</option>
+        </select><br><br>
+        
+
+        <label for="Customer">Customer</label><br>
+        <select multiple id="Customer">
+            <option>Owner 1</option>
+            <option>Owner 2</option>
+        </select><br><br>
+
+        <label for="Costs">Responsible Costs</label><br>
+        <select multiple id="Costs">
+            <option>Building Cost</option>
+            <option>Reparation Cost</option>
+            <option>Operation Cost</option>
+        </select><br><br>
+
+        <input type="submit"/>
+        <button onclick='history.back()'>Cancel</button>
+        
+
+    </form>>
+</body>
+</html>

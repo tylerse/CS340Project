@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title>Customer Details</title>
+    <meta name="description" content="The list of Customers owning property or interested in the Living Earth Project">
+    <meta name="keywords" content="Customers Living Earth">
+</head>
+
+<body>
+    <form>
+        
+        <label for="CustomerID">ID</label><br>
+        <input type="text" id ="CustomerID" disabled="true"><br><br>
+        
+        <label for="CustomerFirstname">First Name</label><br>
+        <input type="text" id ="CustomerFirstname"><br><br>
+
+        <label for="CustomerLastname">Last Name</label><br>
+        <input type="text" id ="CustomerLastname"><br><br>        
+
+        <label for="House">Property Ownership</label><br>
+        <select multiple id="House">
+            <option>House 1</option>
+            <option>House 2</option>
+        </select><br><br>
+
+        <label for="Costs">Responsible Costs</label><br>
+        <select multiple id="Costs">
+            <option>Building Cost</option>
+            <option>Reparation Cost</option>
+            <option>Operation Cost</option>
+        </select><br><br>
+
+        <input type="submit"/>
+        <button onclick='history.back()'>Cancel</button>
+
+    </form>>
+</body>
+</html>
