@@ -5,14 +5,13 @@ import DataTable from '../components/DataTable';
 import DataEntryTable from '../components/DataEntryTable';
 import * as entities from '../scripts/entities.js'
 
-export default function Customer({data, cancel, addNew, update}){
+export default function House({data, cancel, addNew, update}){
 
-    const [CustomerID, setCustomerID] = useState(data !== undefined ? data["CustomerID"] : "");
-    const [CustomerFirstname, setCustomerFirstname] = useState(data !== undefined ?  data["CustomerFirstname"] : "");
-    const [CustomerLastname, setCustomerLastname] = useState( data !== undefined ? data["CustomerLastname"] : "");
-    const [OpenPayment, setOpenPayment] = useState( data !== undefined ? data["OpenPayment"] : "");
-    const [Paid, setPaid] = useState(new Date( data !== undefined ? data["Paid"] : Date.now()) )
-    const [HouseOrdered, setHouseOrdered] = useState( data !== undefined ? new Date(data["HouseOrdered"] ) : Date.now())
+    const [HouseID, setHouseID] = useState(data !== undefined ? data["HouseID"] : "");
+    const [HouseSize, setHouseSize] = useState(data !== undefined ?  data["HouseSize"] : "");
+    const [PatioUpgrade, setPatioUpgrade] = useState( data !== undefined ? data["PatioUpgrade"] : "");
+    const [GarageUpgrade, setGarageUpgrade] = useState( data !== undefined ? data["GarageUpgrade"] : "");
+    const [OpenPayment, setOpenPayment] = useState()
 
     // Related data
     const [E1, setE1] = useState([]);
@@ -24,21 +23,14 @@ export default function Customer({data, cancel, addNew, update}){
     const [newData, setNewData] = useState(data === undefined);
 
     const constructObj = () => {
-        const customer = {
-            "CustomerID" : CustomerID,
-            "CustomerFirstname" : CustomerFirstname,
-            "CustomerLastname" : CustomerLastname,
-            "OpenPayment" : OpenPayment,
-            "Paid" : convertDate(Paid),
-            "HouseOrdered" : convertDate(HouseOrdered)
+        const entity = {
+            "HouseID" : HouseID,
+            "HouseSize" : HouseSize,
+            "PatioUpgrade" : PatioUpgrade,
+            "GarageUpgrade" : GarageUpgrade,
         }
         cancel(false);
-        return customer;
-    }
-
-    const convertDate = (date) => {
-        let ndate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
-        return ndate;
+        return entity;
     }
 
     const get = async (type) => {
@@ -47,10 +39,10 @@ export default function Customer({data, cancel, addNew, update}){
     }
 
     const loadRelatedEntities = async () => {            
-        let result = await entities.get("CustomerHouses", `CustomerID=${CustomerID}`);
+        let result = await entities.get("CustomerHouses", `HouseID=${HouseID}`);
         setE1(result);
 
-        result = await entities.get("CustomerCosts", CustomerID);
+        result = await entities.get("HouseCosts", HouseID);
         let openPayments = 0;
         console.log(result)
         for(let i = 0; i < result.length; i++){
@@ -62,19 +54,19 @@ export default function Customer({data, cancel, addNew, update}){
     }  
 
     const updateRelatedE1 = async (entity) => {
-        await entities.update(data, entity,"CustomerID","HouseID")
+        await entities.update(entity, data, "CustomerID","HouseID")
         loadRelatedEntities();
         setEdit(false);
     }
 
     const updateRelatedE2 = async (entity, total) => {
-        await entities.update(data, entity,"CustomerID","CostID", total)
+        await entities.update(data, entity,"HouseID","CostID", total)
         loadRelatedEntities();
         setEdit2(false);
     }
 
     const onEdit = async () => {
-        setAllEntries(await get("Houses"));     
+        setAllEntries(await get("Customers"));     
         setEdit(true);
     }
 
@@ -86,13 +78,13 @@ export default function Customer({data, cancel, addNew, update}){
 
 
     const deleteRelatedE1 = (entity) => {
-        entities.del("CustomerHouses", CustomerID, entity.HouseID)
+        entities.del("CustomerHouses", entity.CustomerID, HouseID)
         setEdit(false);
     }
 
     const deleteRelatedE2 = (entity) => {
         console.log(entity)
-        entities.del("CustomerCosts", CustomerID, entity.CostID, entity.Total)
+        entities.del("HouseCosts", HouseID, entity.CostID)
         setEdit(false);
     }
 
@@ -102,32 +94,33 @@ export default function Customer({data, cancel, addNew, update}){
 
     return (
         <div className="overlay">
-            <form id="addCustomer">
-                <legend><h3>{ newData ? "Add Customer" : "Edit Customer"}</h3></legend>
+            <form id="addHouser">
+                <legend><h3>{ newData ? "Add House" : "Edit House"}</h3></legend>
 
                 <fieldset className="fields">
-                    <label> First Name </label> 
-                        <input type="text" name="FirstName" value={CustomerFirstname} onChange={e => setCustomerFirstname(e.target.value)}/>
-                    <label> Last Name </label> 
-                        <input type="text" name="LastName" value={CustomerLastname} onChange={e => setCustomerLastname(e.target.value)}/>
+                    <label> House Size </label> 
+                        <input type="text" name="HouseSize" value={HouseSize} onChange={e => setHouseSize(e.target.value)}/>
+                    <label> Patio Upgrade </label>
+                        <select name="PatioUpgrade" value={PatioUpgrade} onChange={e => setPatioUpgrade(e.target.value)}>
+                            <option value={0}>No</option>
+                            <option value={1}>Yes</option>
+                        </select>
+                        
+                    <label> Garage Upgrade</label> 
+                        <select name="GarageUpgrade" value={GarageUpgrade} onChange={e => setGarageUpgrade(e.target.value)}>
+                            <option value={0}>No</option>
+                            <option value={1}>Yes</option>
+                        </select>
                     <br />
                     <h2><b>Payment Status </b></h2> 
                         <h2>{OpenPayment === 0 ? <span color="black">CLOSED</span> : <span color="red">${OpenPayment} DUE</span>}</h2>
                     <label>Paid Date</label>
-                    <DatePicker
-                        selected={Paid}
-                        onChange={date => setPaid(date)} 
-                    />
+                    <br/><br/>
 
-                    <label>House Ordered Date</label>
-                    <DatePicker
-                        selected={HouseOrdered}
-                        onChange={date => setHouseOrdered(date)}
-                    /><br/><br/>
-                    { newData ? <input className="submit" type="button" value="Add New Customer" onClick={ () => { 
+                    { newData ? <input className="submit" type="button" value="Add New House" onClick={ () => { 
                                                                                                             addNew(constructObj())
                                                                                                             cancel(false) }}/> :
-                                <input className="submit" type="button" value="Update Customer Information" onClick={ () => {
+                                <input className="submit" type="button" value="Update House Information" onClick={ () => {
                                                                                                                     update(constructObj()) 
                                                                                                                     cancel(false)}}/> } 
                     
@@ -136,14 +129,14 @@ export default function Customer({data, cancel, addNew, update}){
                 </fieldset>
 
                 <div>                
-                <h3>Associated Houses</h3>
-                <DataTable  headers={["CustomerID", "HouseID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
+                <h3>Associated Customers</h3>
+                <DataTable  headers={["CustomerID", "HouseID", "First Name", "Last Name", "Paid Date", "House Ordered On"]}
                             data={E1}
                             onSelect={onEdit} 
                             onDelete={deleteRelatedE1} 
                             canDelete={true} 
                             canAddNew={true}/>
-                {edit ? <DataTable  headers={["House ID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
+                {edit ? <DataTable  headers={["Customer ID", "CustomerFirstname", "CustomerLastname", "Paid Date", "House Ordered Date"]}
                                     data ={allEntries}
                                     onSelect={updateRelatedE1}
                                     onDelete={deleteRelatedE1}
@@ -152,7 +145,7 @@ export default function Customer({data, cancel, addNew, update}){
                                     display={"overlay"}/> 
                                     : null}
                 <h3>Associated Costs</h3>
-                <DataTable  headers={["CustomerID", "CostID", "Total", "Cost Description"]}
+                <DataTable  headers={["HouseID", "CostID", "Total", "Cost Description"]}
                             data={E2} 
                             onDelete={deleteRelatedE2} 
                             canDelete={true} 

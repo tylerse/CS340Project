@@ -1,50 +1,116 @@
-export default function Costs() {
-    return (
-        <div>
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DataTable from '../components/DataTable';
+import Cost from '../pages/Cost';
+
+export default function Customers() {
+
+    const navigate = useNavigate();
+
+    const fetchUrl = '/costs';
+    const operandUrl = '/cost';
+    const entityIdString = 'CostID';
+    const tableHeaders = ["ID", "Cost Description"];
+
+    const [edit, toggleEdit] = useState(false);
+    const [entries, setEntries] = useState([]);
+    const [entryData, setEntryData] = useState((input) => {return input});
+
+    // Initial fetch of all entries
+    const getEntries = async () => {
+        await fetch(fetchUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data[0])
+            setEntries(data[0]);
+        })
+        .catch(
+            setEntries["No Data Available"]
+        )       
+    };
+
+    // Toggle the deletion confirmation dialog.
+    const onDelete = async (entry) => {
+        const id = entry[entityIdString];
+        console.log(operandUrl + "/" + id)
+        const response = await fetch(operandUrl + "/" + id, {
+            method: 'DELETE',
+            body: JSON.stringify({id:id}),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }
+        })
+        if(response.ok){
+            entries.forEach(entry => console.log(entry[entityIdString]))
+            console.log(id)
+            setEntries(entries.filter(entry => entry[entityIdString] !== id))
+        }
+    }
+
+    const onEdit = (data) => {
+        console.log(data)
+        setEntryData(data)
+        toggleEdit(true)
+    }
+
+    const addNew = async (data) => {
+        const response = await fetch(operandUrl, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }        
+        })
+        if(!response.ok){
+            throw new Error(`Status: ${response.status}`)
+        }
+  
+        setEntries(entries => 
+          [...entries, data]
+        );
+    }
+
+    // Submit updated information for entries
+    const update = async (data) => {
+        const response = await fetch(operandUrl + "/" + data[entityIdString], {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }        
+        })
+
+        if(!response.ok){
+            throw new Error(`Status: ${response.status}`)
+        }
+ 
+        const current = entries;
+        current.forEach(entry => {
+            entry = entry[entityIdString] === data[entityIdString] ? data : entry
+        })
+        setEntries(current);
+        navigate(0);
+    }
+
+    useEffect(() => {
+        getEntries();
+    }, []);
+
+    return (        
+        <div className = "content">
+
+            {edit ? <Cost data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
+
             <div id="browse">
-                <p><strong>Browse Customers</strong></p>
-                <table border="1" cellpadding="5">
-                <tr>
-                    <th><a href="#">New</a></th>
-                    <th></th>
-                    <th>ID</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>OpenPayment</th>
-                    <th>Paid</th>
-                    <th>HouseOrdered</th>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Max</td>
-                    <td >Mueller</td>
-                    <td align="center">yes</td>
-                    <td ></td>
-                    <td >02-22-2022</td>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Moritz</td>
-                    <td >Schmied</td>
-                    <td align="center">no</td>
-                    <td >07-12-2023</td>
-                    <td >02-22-2022</td>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Maria</td>
-                    <td >Suarez</td>
-                    <td align="center">no</td>
-                    <td >02-22-2023</td>
-                    <td >02-22-2022</td>
-                </tr>
-                </table>
+                <p><strong>Costs</strong></p>
+                < DataTable 
+                    headers={tableHeaders}
+                    data={entries} 
+                    name={"entries"} 
+                    onSelect={ onEdit } 
+                    onDelete={ onDelete } 
+                    canAddNew={ true }
+                    canDelete={ false }/>
                 <p>&nbsp;</p>
             </div>
         </div>

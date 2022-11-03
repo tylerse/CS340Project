@@ -13,8 +13,8 @@ export default function Home(){
     return(
         <>
             <div className = "header">
-                <div className = "left" onClick={() => navigate(-1)}>
-                   <h2> ← Back </h2>
+                <div className = "left">
+                   <h2> Welcome </h2>
                 </div>
                 <div className = "middle">
                     <h2>Living Earth Project</h2>

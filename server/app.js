@@ -10,23 +10,29 @@ app.use(express.urlencoded({
 }));
 
 // Define a route handler for HTTP GET requests
-app.get("/houses", function (req, res) {
-    console.log("received request for all houses.")
-    // Make a request
-    sql.GetAllHouses()
-      .then(response => {
-        // send the collected data back to the client-side DataTable
-        res.send(
-          response
-        )
-        console.log(response)
-      })
-      .catch(function (error) {
-         // handle error
-         console.log(error);
-         res.json({"error": error});
-      })
-  });
+
+
+
+// Cost REST =================================================
+
+app.get("/costs", function (req, res) {
+  console.log("Received request for all costs.")
+  sql.GetAllCosts()
+    .then( response => {
+      res.send(response)
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+})
+
+app.post("/cost", function(req, res) {
+  console.log("Received new cost information.")
+  console.log(req.body)
+  const response = sql.CreateNewCost(req.body);
+  res.send(response);
+})
 
 
 //============================================================
@@ -73,12 +79,45 @@ app.delete("/customer/:id", function (req, res) {
   })
 })
 
-// CUSTOMER HOUSES
+// HOUSE REST ===============================================================================
 
-app.get("/customerhouses/:id", function (req, res) {
+app.get("/houses", function (req, res) {
+  console.log("received request for all houses.")
+  // Make a request
+  sql.GetAllHouses()
+    .then(response => {
+      // send the collected data back to the client-side DataTable
+      res.send(
+        response
+      )
+      console.log(response)
+    })
+    .catch(function (error) {
+       // handle error
+       console.log(error);
+       res.json({"error": error});
+    })
+});
+
+app.post("/house", function(req, res) {
+  console.log("Received new house information.")
+  console.log(req.body)
+  const response = sql.CreateNewHouse(req.body);
+  res.send(response);
+})
+
+app.put("/house/:id", function(req, res) {
   const id = req.params.id
-  console.log(`Received request for Houses related to Customer ID #${id}`)
-  sql.GetCustomerHouses(id)
+  console.log("Received updated house information.")
+  console.log(req.body)
+  const response = sql.UpdateHouse(id, req.body);
+  res.send(response);
+})
+
+app.get("/housecosts/:id", function (req, res) {
+  const id = req.params.id
+  console.log(`Received request for Costs related to house ID #${id}`)
+  sql.GetHouseCosts(id)
     .then( response => {
       res.send(response)
       console.log(response)
@@ -86,6 +125,105 @@ app.get("/customerhouses/:id", function (req, res) {
     .catch(function (error) {
       console.log(error)
     })
+})
+
+
+// Investor REST =======================================================================
+
+app.get("/investors", function (req, res) {
+  console.log("Received request for all investors.")
+  // Make a request
+  sql.GetAllInvestors()
+    .then(response => {
+      // send the collected data back to the client-side DataTable
+      res.send(
+        response
+      )
+      console.log(response)
+    })
+    .catch(function (error) {
+       // handle error
+       console.log(error);
+       res.json({"error": error});
+    })
+});
+
+app.get("/investorcosts/", function (req, res) {
+
+  const id = req.query.InvestorID
+  const cid = req.query.CostID
+
+  if(id !== undefined){
+    console.log(`Received request for Costs related to Investor ID #${id}`)
+    sql.GetInvestorCostsByCost(id)
+      .then( response => {
+        res.send(response)
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+     })
+  }
+  else {
+    console.log(`Received request for Investors related to Cost ID #${cid}`)
+    sql.GetInvestorCostsByInvestor(cid)
+      .then( response => {
+        res.send(response)
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+     }) 
+  }
+  
+})
+
+app.delete("/investorcosts/:id/:h_id/:total", function (req, res) {
+  const id = req.params.id
+  const h_id = req.params.h_id
+  const total = req.params.total
+  console.log(`Received delete request for investor #${id} and cost id #${h_id} and total ${total}`)
+  sql.DeleteInvestorCosts(id, h_id, total)
+    .then( response => {
+      res.send(response)
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+})
+
+
+// CUSTOMER HOUSES
+
+app.get("/customerhouses/", function (req, res) {
+
+  const id = req.query.HouseID
+  const cid = req.query.CustomerID
+
+  if(id !== undefined){
+    console.log(`Received request for Customers related to House ID #${id}`)
+    sql.GetCustomerHousesByHouse(id)
+      .then( response => {
+        res.send(response)
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+     })
+  }
+  else {
+    console.log(`Received request for Houses related to Customer ID #${cid}`)
+    sql.GetCustomerHousesByCustomer(cid)
+      .then( response => {
+        res.send(response)
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+     }) 
+  }
+  
 })
 
 app.post("/customerhouses/:id/:h_id", function (req, res) {
@@ -116,6 +254,50 @@ app.delete("/customerhouses/:id/:h_id", function (req, res) {
     })
 })
 
+// CUSTOMER COSTS
+
+app.get("/customercosts/", function (req, res) {
+  const id = req.params.id
+  console.log(`Received request for Costs related to Customer ID #${id}`)
+  sql.GetCustomerCosts(id)
+    .then( response => {
+      res.send(response)
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+})
+
+app.post("/customercosts/:id/:h_id/:total", function (req, res) {
+  const id = req.params.id
+  const h_id = req.params.h_id
+  const total = req.params.total
+  console.log(`Received post request for customer #${id} and cost id #${h_id}`)
+  sql.UpdateCustomerCosts(id, h_id, total)
+    .then( response => {
+      console.log(response)
+      res.send(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+})
+
+app.delete("/customercosts/:id/:h_id/:total", function (req, res) {
+  const id = req.params.id
+  const h_id = req.params.h_id
+  const total = req.params.total
+  console.log(`Received delete request for customer #${id} and cost id #${h_id} and total ${total}`)
+  sql.DeleteCustomerCosts(id, h_id, total)
+    .then( response => {
+      res.send(response)
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+})
 
 
 app.listen(port, () => {

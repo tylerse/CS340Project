@@ -1,21 +1,35 @@
-export const update = async (e1, e2, e1_id, e2_id) => {
+export const update = async (e1, e2, e1_id, e2_id, total) => {
     let response = '';
     switch(e1_id){
         case "CustomerID":
-            response = e2_id === "HouseID" ? 
-                await fetch(`/customerhouses/${e1[e1_id]}/${e2[e2_id]}`, {
+            if(e2_id === "HouseID") {
+                response = await fetch(`/customerhouses/${e1[e1_id]}/${e2[e2_id]}`, {
+                    method: 'POST'
+                }) 
+            } 
+            if(e2_id === "CostID") {
+                await fetch(`/customercosts/${e1[e1_id]}/${e2[e2_id]}/${total}`, {
                 method: 'POST'
-            }) :
-                await fetch(`/customercosts/${e1[e1_id]}/${e2[e2_id]}`, {
-                method: 'POST'
-            });
-            console.log(`/customerhouses/${e1[e1_id]}/${e2[e2_id]}`)       
+                });
+            }      
             break;
+        case "HouseID":
+            if(e2_id === "CostID"){
+                await fetch(`/housecosts/${e1[e1_id]}/${e2[e2_id]}/${total}`, {
+                    method: 'POST'
+                    });
+            }    
+        case "InvestorID":
+            if(e2_id === "CostID"){
+                await fetch(`/investorcosts/${e1[e1_id]}/${e2[e2_id]}/${total}`, {
+                    method: 'POST'
+                    });
+            } 
         default:
             return {"Error":"Could not process request"}
     }
 
-    
+    console.log(response);
     response.ok ? console.log("Posted OK") : console.log("Error updating information") 
     const data = await response.json();
     return data;   
@@ -25,11 +39,29 @@ export const get = async (type, e_id) => {
 
     let response = '';
     switch(type){
+        case "Customers":
+            response = await fetch(`/customers`)
+        break;
         case "Houses":
             response = await fetch(`/houses`)
             break;
+        case "Costs":
+            response = await fetch(`/costs`)
+            break;
+        case "Investors":
+            response = await fetch(`/investors`)
+            break;
+        case "InvestorCosts":
+            response = await fetch(`/investorcosts/?${e_id}`)
+            break;
         case "CustomerHouses":
-            response = await fetch(`/customerhouses/${e_id}`)
+            response = await fetch(`/customerhouses/?${e_id}`)
+            break;
+        case "CustomerCosts":
+            response = await fetch(`/customercosts/${e_id}`)
+            break;
+        case "HouseCosts":
+            response = await fetch(`/housecosts/${e_id}`)
             break;
         default:
             return {Error: "Could not process request get request"};
@@ -39,7 +71,7 @@ export const get = async (type, e_id) => {
     return data[0];
 }
 
-export const del = async (type, e1_id, e2_id) => {
+export const del = async (type, e1_id, e2_id, total) => {
     let response = '';
     switch(type){
         case "CustomerHouses":
@@ -47,6 +79,14 @@ export const del = async (type, e1_id, e2_id) => {
                 method: 'DELETE'
             })
             break;
+        case "CustomerCosts":
+            response = await fetch(`/customercosts/${e1_id}/${e2_id}/${total}`,{
+                method: 'DELETE'
+            })
+        case "InvestorCosts":
+            response = await fetch(`/investorcosts/${e1_id}/${e2_id}/${total}`,{
+                method: 'DELETE'
+            })
         default:
             return {Error: "Could not process request get request"};
     }

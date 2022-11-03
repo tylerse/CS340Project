@@ -194,6 +194,12 @@ tr:hover td {
   background-color: rgb(255, 204, 123);
 }
 
+.submit, .cancel {
+  padding: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

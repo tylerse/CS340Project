@@ -10,6 +10,7 @@ export default function Customers() {
     const fetchUrl = '/customers';
     const operandUrl = '/customer';
     const entityIdString = 'CustomerID';
+    const tableHeaders = ["ID", "First Name", "Last Name", "Paid", "House Ordered On"];
 
     const [edit, toggleEdit] = useState(false);
     const [entries, setEntries] = useState([]);
@@ -20,7 +21,7 @@ export default function Customers() {
         await fetch(fetchUrl)
         .then(response => response.json())
         .then(data => {
-            setEntries(data);
+            setEntries(data[0]);
         })
         .catch(
             setEntries["No Data Available"]
@@ -62,11 +63,10 @@ export default function Customers() {
         if(!response.ok){
             throw new Error(`Status: ${response.status}`)
         }
- 
-        let current = entries;
-        current.push(data)  
-        setEntries(current);
-        navigate(0);
+  
+        setEntries(entries => 
+          [...entries, data]
+        );
     }
 
     // Submit updated information for entries
@@ -88,6 +88,7 @@ export default function Customers() {
             entry = entry[entityIdString] === data[entityIdString] ? data : entry
         })
         setEntries(current);
+        navigate(0);
     }
 
     useEffect(() => {
@@ -102,7 +103,7 @@ export default function Customers() {
             <div id="browse">
                 <p><strong>Customers</strong></p>
                 < DataTable 
-                    headers={["ID", "First Name", "Last Name", "Open Payment", "Paid", "House Ordered On"]}
+                    headers={tableHeaders}
                     data={entries} 
                     name={"entries"} 
                     onSelect={ onEdit } 
