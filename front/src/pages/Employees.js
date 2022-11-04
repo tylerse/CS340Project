@@ -1,102 +1,117 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DataTable from '../components/DataTable';
+import Employee from '../pages/Employee';
+
 export default function Employees() {
-    return (
-            <>
-            <div id="browse" style="display: block">
-                <p><strong>Browse Customers</strong></p>
-                <table border="1" cellpadding="5">
-                <tr>
-                    <th><a href="#">New</a></th>
-                    <th></th>
-                    <th>ID</th>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>OpenPayment</th>
-                    <th>Paid</th>
-                    <th>HouseOrdered</th>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Max</td>
-                    <td >Mueller</td>
-                    <td align="center">yes</td>
-                    <td ></td>
-                    <td >02-22-2022</td>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Moritz</td>
-                    <td >Schmied</td>
-                    <td align="center">no</td>
-                    <td >07-12-2023</td>
-                    <td >02-22-2022</td>
-                </tr>
-                <tr>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Delete</a></td>
-                    <td align="right" >1</td>
-                    <td >Maria</td>
-                    <td >Suarez</td>
-                    <td align="center">no</td>
-                    <td >02-22-2023</td>
-                    <td >02-22-2022</td>
-                </tr>
-                </table>
+
+    const navigate = useNavigate();
+
+    const fetchUrl = '/employees';
+    const operandUrl = '/employee';
+    const entityIdString = 'EmployeeID';
+    const tableHeaders = ["ID", "First Name", "Last Name", "Salary", "Birthday", "Insurance", "Date Employed"];
+
+    const [edit, toggleEdit] = useState(false);
+    const [entries, setEntries] = useState([]);
+    const [entryData, setEntryData] = useState((input) => {return input});
+
+    // Initial fetch of all entries
+    const getEntries = async () => {
+        await fetch(fetchUrl)
+        .then(response => response.json())
+        .then(data => {
+            setEntries(data[0]);
+        })
+        .catch(
+            setEntries["No Data Available"]
+        )       
+    };
+
+    // Toggle the deletion confirmation dialog.
+    const onDelete = async (entry) => {
+        const id = entry[entityIdString];
+        console.log(operandUrl + "/" + id)
+        const response = await fetch(operandUrl + "/" + id, {
+            method: 'DELETE',
+            body: JSON.stringify({id:id}),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }
+        })
+        if(response.ok){
+            entries.forEach(entry => console.log(entry[entityIdString]))
+            console.log(id)
+            setEntries(entries.filter(entry => entry[entityIdString] !== id))
+        }
+    }
+
+    const onEdit = (data) => {
+        console.log(data)
+        setEntryData(data)
+        toggleEdit(true)
+    }
+
+    const addNew = async (data) => {
+        const response = await fetch(operandUrl, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }        
+        })
+        if(!response.ok){
+            throw new Error(`Status: ${response.status}`)
+        }
+  
+        setEntries(entries => 
+          [...entries, data]
+        );
+    }
+
+    // Submit updated information for entries
+    const update = async (data) => {
+        const response = await fetch(operandUrl + "/" + data[entityIdString], {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            }        
+        })
+
+        if(!response.ok){
+            throw new Error(`Status: ${response.status}`)
+        }
+ 
+        const current = entries;
+        current.forEach(entry => {
+            entry = entry[entityIdString] === data[entityIdString] ? data : entry
+        })
+        setEntries(current);
+        navigate(0);
+    }
+
+    useEffect(() => {
+        getEntries();
+    }, []);
+
+    return (        
+        <div className = "content">
+
+            {edit ? <Employee data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
+
+            <div id="browse">
+                <p><strong>Employee</strong></p>
+                < DataTable 
+                    headers={tableHeaders}
+                    data={entries} 
+                    name={"entries"} 
+                    onSelect={ onEdit } 
+                    onDelete={ onDelete } 
+                    canAddNew={ true }
+                    canDelete={ true }/>
                 <p>&nbsp;</p>
             </div>
-            
-            <div id="insert" style="display: block">
-                <form id="addCustomer">
-                    <legend><strong>Add Customer</strong></legend>
-
-                    <fieldset class="fields">
-                        <label> FirstName </label> <input type="text" name="FirstName" />
-                        <label> LastName </label> <input type="text" name="LastName" />
-                        <label> OpenPayment </label> <input type="radio" name="yes" value="1"/> yes
-                        <input type="radio" name="yes" value="2"/> no 
-                        <label> Paid</label> <input type="date" name="Paid" />
-                        <label> HouseOrdered</label> <input type="date" name="language" />
-                    </fieldset>
-
-                    <input class="btn" type="submit" id="addPlanet" value="Add a Customer" />
-                    <input class="btn" type="button" value="cancel" />
-                </form> 
-            </div>
-
-            <p>&nbsp;</p>
-            <div id="update" style="display: block">
-            <form id="updateCustomer">
-                <legend><strong>Update Customer</strong></legend>
-                    <fieldset class="fields">
-                    <label>ID:</label> 1
-                    <label> FirstName </label> <input type="text" name="FirstName" />
-                    <label> LastName </label> <input type="text" name="LastName" />
-                    <label> OpenPayment </label> <input type="radio" name="yes" value="1"/> yes
-                    <input type="radio" name="yes" value="2"/> no 
-                    <label> Paid</label> <input type="date" name="Paid" />
-                    <label> HouseOrdered</label> <input type="date" name="language" />
-                </fieldset>
-                <input class="btn" type="submit" id="UpdateSaveCustomer" value="Save Update Customer" />
-                    <input class="btn" type="button" value="cancel" />
-            </form> 
-            </div>
-            <p>&nbsp;</p>
-            <div id="delete" style="display: block">
-            <form id="deleteCustomer">
-                <legend><strong>Delete Customer</strong></legend>
-                    <fieldset class="fields">
-                    <p>Are you sure you wish to delete the following?</p>
-                    <label>ID:</label> 1
-                        <label> Name </label> Max Mueller
-                        
-                </fieldset>
-                <input class="btn" type="submit" id="DeleteCustomer" value="Delete Customer" />
-                    <input class="btn" type="button" value="cancel" />
-            </form> 
-            </div>
-            </>
+        </div>
     )
 }

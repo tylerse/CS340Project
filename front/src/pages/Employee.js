@@ -7,12 +7,17 @@ import * as entities from '../scripts/entities.js'
 
 export default function Customer({data, cancel, addNew, update}){
 
-    const [CustomerID, setCustomerID] = useState(data !== undefined ? data["CustomerID"] : "");
-    const [CustomerFirstname, setCustomerFirstname] = useState(data !== undefined ?  data["CustomerFirstname"] : "");
-    const [CustomerLastname, setCustomerLastname] = useState( data !== undefined ? data["CustomerLastname"] : "");
+    const [EmployeeID, setEmployeeID] = useState(data !== undefined ? data["EmployeeID"] : "");
+    const [EmployeeFirstname, setEmployeeFirstname] = useState(data !== undefined ?  data["EmployeeFirstname"] : "");
+    const [EmployeeLastname, setEmployeeLastname] = useState( data !== undefined ? data["EmployeeLastname"] : "");
+    const [EmployeeSalary, setEmployeeSalary] = useState( data !== undefined ? data["EmployeeSalary"] : "");    
+    const [EmployeeBirthday, setEmployeeBirthday] = useState( data !== undefined ? new Date(data["EmployeeBirthday"] ) : Date.now())
+    const [EmployeeInsurance, setEmployeeInsurance] = useState( data !== undefined ? data["EmployeeInsurance"] : "");
+    const [Employed, setEmployed] = useState( data !== undefined ? new Date(data["Employed"] ) : Date.now())
+   
+
     const [OpenPayment, setOpenPayment] = useState( data !== undefined ? data["OpenPayment"] : "");
     const [Paid, setPaid] = useState(new Date( data !== undefined ? data["Paid"] : Date.now()) )
-    const [HouseOrdered, setHouseOrdered] = useState( data !== undefined ? new Date(data["HouseOrdered"] ) : Date.now())
 
     // Related data
     const [E1, setE1] = useState([]);
@@ -24,16 +29,16 @@ export default function Customer({data, cancel, addNew, update}){
     const [newData, setNewData] = useState(data === undefined);
 
     const constructObj = () => {
-        const customer = {
-            "CustomerID" : CustomerID,
-            "CustomerFirstname" : CustomerFirstname,
-            "CustomerLastname" : CustomerLastname,
-            "OpenPayment" : OpenPayment,
-            "Paid" : convertDate(Paid),
-            "HouseOrdered" : convertDate(HouseOrdered)
+        const entity = {
+            "EmployeeID" : EmployeeID,
+            "EmployeeFirstname" : EmployeeFirstname,
+            "EmployeeLastname" : EmployeeLastname,
+            "EmployeeSalary" : EmployeeSalary,
+            "EmployeeBirthday" : EmployeeBirthday,
+            "EmployeeInsurance" : EmployeeInsurance
         }
         cancel(false);
-        return customer;
+        return entity;
     }
 
     const convertDate = (date) => {
@@ -47,10 +52,7 @@ export default function Customer({data, cancel, addNew, update}){
     }
 
     const loadRelatedEntities = async () => {            
-        let result = await entities.get("CustomerHouses", `CustomerID=${CustomerID}`);
-        setE1(result);
-
-        result = await entities.get("CustomerCosts", `CustomerID=${CustomerID}`);
+        let result = await entities.get("EmployeeCosts", `EmployeeID=${EmployeeID}`);
         let openPayments = 0;
         console.log(result)
         for(let i = 0; i < result.length; i++){
@@ -61,21 +63,10 @@ export default function Customer({data, cancel, addNew, update}){
         setE2(result);
     }  
 
-    const updateRelatedE1 = async (entity) => {
-        await entities.update(data, entity,"CustomerID","HouseID")
-        loadRelatedEntities();
-        setEdit(false);
-    }
-
     const updateRelatedE2 = async (entity, total) => {
-        await entities.update(data, entity,"CustomerID","CostID", total)
+        await entities.update(data, entity,"EmployeeID","CostID", total)
         loadRelatedEntities();
         setEdit2(false);
-    }
-
-    const onEdit = async () => {
-        setAllEntries(await get("Houses"));     
-        setEdit(true);
     }
 
     const onEdit2 = async () => {
@@ -84,15 +75,9 @@ export default function Customer({data, cancel, addNew, update}){
     }
 
 
-
-    const deleteRelatedE1 = (entity) => {
-        entities.del("CustomerHouses", CustomerID, entity.HouseID)
-        setEdit(false);
-    }
-
     const deleteRelatedE2 = (entity) => {
         console.log(entity)
-        entities.del("CustomerCosts", CustomerID, entity.CostID, entity.Total)
+        entities.del("EmployeeCosts", EmployeeID, entity.CostID, entity.Total)
         setEdit(false);
     }
 
@@ -102,32 +87,32 @@ export default function Customer({data, cancel, addNew, update}){
 
     return (
         <div className="overlay">
-            <form id="addCustomer">
-                <legend><h3>{ newData ? "Add Customer" : "Edit Customer"}</h3></legend>
+            <form id="addEmployee">
+                <legend><h3>{ newData ? "Add Employee" : "Edit Employee"}</h3></legend>
 
                 <fieldset className="fields">
                     <label> First Name </label> 
-                        <input type="text" name="FirstName" value={CustomerFirstname} onChange={e => setCustomerFirstname(e.target.value)}/>
+                        <input type="text" name="FirstName" value={EmployeeFirstname} onChange={e => setEmployeeFirstname(e.target.value)}/>
                     <label> Last Name </label> 
-                        <input type="text" name="LastName" value={CustomerLastname} onChange={e => setCustomerLastname(e.target.value)}/>
+                        <input type="text" name="LastName" value={EmployeeLastname} onChange={e => setEmployeeLastname(e.target.value)}/>
                     <br />
-                    <h2><b>Payment Status </b></h2> 
-                        <h2>{OpenPayment === 0 ? <span color="black">CLOSED</span> : <span color="red">${OpenPayment} DUE</span>}</h2>
-                    <label>Paid Date</label>
-                    <DatePicker
-                        selected={Paid}
-                        onChange={date => setPaid(date)} 
-                    />
 
-                    <label>House Ordered Date</label>
+                    <label> Salary </label> 
+                        <input type="text" name="Salary" value={EmployeeSalary} onChange={e => setEmployeeSalary(e.target.value)}/>
+                    <label> Insurance </label> 
+                        <input type="text" name="Insurance" value={EmployeeInsurance} onChange={e => setEmployeeInsurance(e.target.value)}/>
+                    <h2><b>Payment Status </b></h2> 
+                        <h2>{OpenPayment === 0 ? <span color="black">CLOSED</span> : <span color="red">${OpenPayment} TO BE PAID</span>}</h2>
+
+                    <label>Date Employed</label>
                     <DatePicker
-                        selected={HouseOrdered}
-                        onChange={date => setHouseOrdered(date)}
+                        selected={Employed}
+                        onChange={date => setEmployed(date)}
                     /><br/><br/>
-                    { newData ? <input className="submit" type="button" value="Add New Customer" onClick={ () => { 
+                    { newData ? <input className="submit" type="button" value="Add New Employee" onClick={ () => { 
                                                                                                             addNew(constructObj())
                                                                                                             cancel(false) }}/> :
-                                <input className="submit" type="button" value="Update Customer Information" onClick={ () => {
+                                <input className="submit" type="button" value="Update Employee Information" onClick={ () => {
                                                                                                                     update(constructObj()) 
                                                                                                                     cancel(false)}}/> } 
                     
@@ -136,26 +121,11 @@ export default function Customer({data, cancel, addNew, update}){
                 </fieldset>
 
                 <div>                
-                <h3>Associated Houses</h3>
-                <DataTable  headers={["CustomerID", "HouseID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
-                            data={E1}
-                            onSelect={onEdit} 
-                            onDelete={deleteRelatedE1} 
-                            canDelete={true} 
-                            canAddNew={true}/>
-                {edit ? <DataTable  headers={["House ID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
-                                    data ={allEntries}
-                                    onSelect={updateRelatedE1}
-                                    onDelete={deleteRelatedE1}
-                                    canAddNew={false}
-                                    canDelete={false}   
-                                    display={"overlay"}/> 
-                                    : null}
                 <h3>Associated Costs</h3>
-                <DataTable  headers={["CustomerID", "CostID", "Total", "Cost Description"]}
+                <DataTable  headers={["EmployeeID", "CostID", "Total", "Cost Description"]}
                             data={E2} 
-                            onSelect={onEdit2}
                             onDelete={deleteRelatedE2} 
+                            onSelect={onEdit2}
                             canDelete={true} 
                             canAddNew={true}
                             noSelect={true}/>

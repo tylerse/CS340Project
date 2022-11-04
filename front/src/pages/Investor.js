@@ -44,7 +44,7 @@ export default function Investor({data, cancel, addNew, update}){
     }
 
     const loadRelatedEntities = async () => {            
-        let result = await entities.get("InvestorCosts", InvestorID);
+        let result = await entities.get("InvestorCosts", `InvestorID=${InvestorID}`);
         let openPayments = 0;
         console.log(result)
         for(let i = 0; i < result.length; i++){
@@ -134,12 +134,15 @@ export default function Investor({data, cancel, addNew, update}){
                 <DataTable  headers={["Investor ID", "Cost ID", "Total", "Cost Description"]}
                             data={E2} 
                             onDelete={deleteRelatedE2} 
+                            onSelect={onEdit2}
                             canDelete={true} 
-                            canAddNew={true}/>
+                            canAddNew={true}
+                            noSelect={true}/>
+                            
                 {edit2 ? <DataEntryTable  headers={["CostID", "Cost Description", "Total"]}
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  
-                                    entryCells={[2]}
+                                    entryCells={[2]}    
                                     display={"overlay"}/> 
                                     : null}
                 </div>

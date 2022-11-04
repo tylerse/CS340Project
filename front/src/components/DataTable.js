@@ -2,7 +2,7 @@ import { useState } from "react";
 import TableRow from '../components/TableRow';
 import ConfirmationDialog from "./ConfirmationDialog";
 
-export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display}){
+export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display, noSelect}){
 
     const [confirm, setConfirm] = useState(false);
     const [targetEntry, setTargetEntry] = useState({});
@@ -62,6 +62,7 @@ export default function DataTable({headers, data, onSelect, onDelete, canAddNew,
                             onSelect={ onSelect }
                             canDelete={ canDelete }
                             row = {i}
+                            noSelect={noSelect}
                             key = {i}/>
                         )
                     } 

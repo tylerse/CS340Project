@@ -19,12 +19,21 @@ export const update = async (e1, e2, e1_id, e2_id, total) => {
                     method: 'POST'
                     });
             }    
+            break;
         case "InvestorID":
             if(e2_id === "CostID"){
                 await fetch(`/investorcosts/${e1[e1_id]}/${e2[e2_id]}/${total}`, {
                     method: 'POST'
                     });
             } 
+            break;
+        case "EmployeeID":
+            if(e2_id === "CostID"){
+                await fetch(`/employeecosts/${e1[e1_id]}/${e2[e2_id]}/${total}`, {
+                    method: 'POST'
+                    });
+            } 
+            break;
         default:
             return {"Error":"Could not process request"}
     }
@@ -51,6 +60,12 @@ export const get = async (type, e_id) => {
         case "Investors":
             response = await fetch(`/investors`)
             break;
+        case "Employees":
+            response = await fetch(`/employees`)
+            break;
+        case "EmployeeCosts":
+            response = await fetch(`/employeecosts/?${e_id}`)
+            break;
         case "InvestorCosts":
             response = await fetch(`/investorcosts/?${e_id}`)
             break;
@@ -58,10 +73,10 @@ export const get = async (type, e_id) => {
             response = await fetch(`/customerhouses/?${e_id}`)
             break;
         case "CustomerCosts":
-            response = await fetch(`/customercosts/${e_id}`)
+            response = await fetch(`/customercosts/?${e_id}`)
             break;
         case "HouseCosts":
-            response = await fetch(`/housecosts/${e_id}`)
+            response = await fetch(`/housecosts/?${e_id}`)
             break;
         default:
             return {Error: "Could not process request get request"};
@@ -85,6 +100,10 @@ export const del = async (type, e1_id, e2_id, total) => {
             })
         case "InvestorCosts":
             response = await fetch(`/investorcosts/${e1_id}/${e2_id}/${total}`,{
+                method: 'DELETE'
+            })
+        case "EmployeeCosts":
+            response = await fetch(`/employeecosts/${e1_id}/${e2_id}/${total}`,{
                 method: 'DELETE'
             })
         default:

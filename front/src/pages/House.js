@@ -75,8 +75,6 @@ export default function House({data, cancel, addNew, update}){
         setEdit2(true);
     }
 
-
-
     const deleteRelatedE1 = (entity) => {
         entities.del("CustomerHouses", entity.CustomerID, HouseID)
         setEdit(false);
@@ -148,8 +146,10 @@ export default function House({data, cancel, addNew, update}){
                 <DataTable  headers={["HouseID", "CostID", "Total", "Cost Description"]}
                             data={E2} 
                             onDelete={deleteRelatedE2} 
+                            onSelect={onEdit2}
                             canDelete={true} 
-                            canAddNew={true}/>
+                            canAddNew={true}
+                            noSelect={true}/>
                 {edit2 ? <DataEntryTable  headers={["CostID", "Cost Description", "Total"]}
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  

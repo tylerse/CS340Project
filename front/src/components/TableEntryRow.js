@@ -5,37 +5,27 @@ import { useRef, useEffect } from "react";
     const total = useRef(0);
 
     const rowId = Math.random(0,1000) + row
-
+    console.log(data)
     const loadTable = () => {
         const tableRow = document.getElementById(rowId);
         tableRow.className = row % 2 === 0 ? "data-row-1" : "data-row-2";
+        for(let entry in data) {    
+            // Data cells
+            let newCell = document.createElement('td')  
+            newCell.textContent = data[entry];
+            tableRow.appendChild(newCell);               
+        }         
         
-        let i = 0;
-        for(let entry in data) {
-
-            console.log(entryCells)
-            
-            if(entryCells.indexOf(i) === -1){
-                // Data cells
-                let newCell = document.createElement('td')  
-                newCell.textContent = data[entry];
-                tableRow.appendChild(newCell);                
-            } else {
-                // Text entry box
-                let newCell = document.createElement('td')  
-                let newInput = document.createElement("input")
-                newInput.setAttribute("type", total)
-                newInput.addEventListener("input", (e) => { total.current = e.target.value;
-                                                            console.log(e.target.value)
-                                                            console.log(total)
-                                                            })
-                newCell.appendChild(newInput);
-                tableRow.appendChild(newCell);  
-                              
-            }   
-
-            i++;             
-        }            
+            // Text entry box
+            let newCell = document.createElement('td')  
+            let newInput = document.createElement("input")
+            newInput.setAttribute("type", total)
+            newInput.addEventListener("input", (e) => { total.current = e.target.value;
+                                                        console.log(e.target.value)
+                                                        console.log(total)
+                                                        })
+            newCell.appendChild(newInput);
+            tableRow.appendChild(newCell);  
             
         
             if(onSave !== undefined){

@@ -55,6 +55,17 @@ export async function GetAllInvestors() {
     }    
 };
 
+export async function GetAllEmployees() {
+    try {
+        const query = 'SELECT * FROM Employees'
+        const result = await pool.query(query)
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }    
+};
+
 export async function CreateNewCustomer(data){
     try {
         const query = `INSERT INTO Customers (CustomerFirstname, CustomerLastname, Paid, HouseOrdered)
@@ -168,6 +179,30 @@ export async function DeleteCustomer(id){
     }
 }
 
+export async function InsertInvestorCosts(id, i_id, total){
+    try {
+        const query = `INSERT INTO InvestorCosts (InvestorID, CostID, Total)
+                        VALUES (?,?,?)`
+        const result = await pool.query(query, [id, i_id, total])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function InsertEmployeeCosts(id, i_id, total){
+    try {
+        const query = `INSERT INTO EmployeeCosts (EmployeeID, CostID, Total)
+                        VALUES (?,?,?)`
+        const result = await pool.query(query, [id, i_id, total])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
 export async function GetCustomerHousesByCustomer(id){
     try {
         const query = `SELECT * FROM CustomerHouses
@@ -220,10 +255,49 @@ export async function GetInvestorCostsByInvestor(id){
     }
 }
 
-
-export async function GetCustomerCosts(id){
+export async function GetEmployeeCostsByCost(id){
     try {
-        const query = `SELECT CustomerCosts.CustomerID, CustomerCosts.CostID, CustomerCosts.Total, Costs.CostDescription FROM CustomerCosts
+        const query = `SELECT * FROM EmployeeCosts
+                        JOIN Employees ON EmployeeCosts.EmployeeID=Employees.EmployeeID
+                        WHERE EmployeeCosts.CostID = ?`
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function GetEmployeeCostsByEmployee(id){
+    try {
+        const query = `SELECT * FROM EmployeeCosts
+                        JOIN Costs ON EmployeeCosts.CostID=Costs.CostID
+                        WHERE EmployeeCosts.EmployeeID = ?`
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+
+export async function GetCustomerCostsByCost(id){
+    try {
+        const query = `SELECT * FROM CustomerCosts
+                        JOIN Customers ON CustomerCosts.CustomerID=Customers.CustomerID
+                        WHERE CustomerCosts.CostID = ?`
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function GetCustomerCostsByCustomer(id){
+    try {
+        const query = `SELECT * FROM CustomerCosts
                         JOIN Costs ON CustomerCosts.CostID=Costs.CostID
                         WHERE CustomerCosts.CustomerID = ?`
         const result = await pool.query(query, [id])
@@ -288,6 +362,19 @@ export async function DeleteInvestorCosts(id, h_id, total){
     try {
         const query = `DELETE FROM InvestorCosts
                        WHERE InvestorID = ? AND CostID = ? AND Total = ?`
+        const result = await pool.query(query, [id, h_id, total])
+        console.log(result)
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function DeleteEmployeeCosts(id, h_id, total){
+    try {
+        const query = `DELETE FROM EmployeeCosts
+                       WHERE EmployeeID = ? AND CostID = ? AND Total = ?`
         const result = await pool.query(query, [id, h_id, total])
         console.log(result)
         return result;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ConfirmationDialog from "./ConfirmationDialog";
   
- export default function TableRow({data, onSelect, onDelete, targetEntry, canDelete, row}){
+ export default function TableRow({data, onSelect, onDelete, targetEntry, canDelete, row, noSelect}){
 
     const rowId = Math.random(0,1000) + row
 
@@ -11,7 +11,8 @@ import ConfirmationDialog from "./ConfirmationDialog";
         for(let entry in data) {
             let newCell = document.createElement('td')  
             newCell.textContent = data[entry];
-            newCell.addEventListener("click", () => onSelect(data));
+            noSelect ? null : newCell.addEventListener("click", () => onSelect(data))
+            
             tableRow.appendChild(newCell);
             
         };
