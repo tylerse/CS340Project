@@ -1,2 +1,5 @@
 /front/node_modules
 /server/nodle_modules
+/front/build
+/server/public
+/server/static

@@ -11,7 +11,7 @@ import ConfirmationDialog from "./ConfirmationDialog";
         for(let entry in data) {
             let newCell = document.createElement('td')  
             newCell.textContent = data[entry];
-            noSelect ? null : newCell.addEventListener("click", () => onSelect(data))
+            if(!noSelect) newCell.addEventListener("click", () => onSelect(data))
             
             tableRow.appendChild(newCell);
             

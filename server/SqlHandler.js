@@ -1,10 +1,10 @@
 import mysql2 from 'mysql2/promise'
 
 const pool = mysql2.createPool({
-    host: 'classmysql.engr.oregonstate.edu',
-    user: 'cs340_tylerse',
-    password: '5039',
-    database: 'cs340_tylerse',
+    host: 'sql.freedb.tech',
+    user: 'freedb_seanpaultyler',
+    password: 'W!ZmtQnVgxDy%@5',
+    database: 'freedb_cs340database',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
@@ -24,7 +24,7 @@ export async function GetAllHouses() {
 
 export async function GetAllCosts() {
     try {
-        const query = 'SELECT * FROM Costs'
+        const query = `SELECT * FROM Costs`
         const result = await pool.query(query)
         return result;
     }
@@ -155,7 +155,51 @@ export async function UpdateHouse(id, data){
     } 
 }
 
-export async function GetHouseCosts(id){
+export async function UpdateInvestor(id, data){
+    try {
+        const query = `UPDATE Investors
+                        SET InvestorName = ?, InvestorBirthday = ?, InvestAmount = ?, InvestName = ?, Profit = ?, ProfitName = ?
+                        WHERE InvestorID = ?`
+        const result = await pool.query(query, [
+            data["InvestorName"],
+            data["InvestorBirthday"],
+            data["InvestAmount"],
+            data["InvestName"],
+            data["Profit"],
+            data["ProfitName"],
+            id
+        ])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+        return {"Error": "Error processing request"}
+    } 
+}
+
+export async function UpdateEmployee(id, data){
+    try {
+        const query = `UPDATE Employees
+                        SET EmployeeFirstname = ?, EmployeeLastname = ?, EmployeeSalary = ?, EmployeeBirthday = ?, EmployeeInsurance = ?, Employed = ?
+                        WHERE EmployeeID = ?`
+        const result = await pool.query(query, [
+            data["EmployeeFirstname"],
+            data["EmployeeLastname"],
+            data["EmployeeSalary"],
+            data["EmployeeBirthday"],
+            data["EmployeeInsurance"],
+            data["Employed"],
+            id
+        ])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+        return {"Error": "Error processing request"}
+    } 
+}
+
+export async function GetHouseCostsByHouse(id){
     try {
         const query = `SELECT HouseCosts.HouseID, HouseCosts.CostID, HouseCosts.Total, Costs.CostDescription FROM HouseCosts
                         JOIN Costs ON HouseCosts.CostID=Costs.CostID
@@ -194,6 +238,18 @@ export async function InsertInvestorCosts(id, i_id, total){
 export async function InsertEmployeeCosts(id, i_id, total){
     try {
         const query = `INSERT INTO EmployeeCosts (EmployeeID, CostID, Total)
+                        VALUES (?,?,?)`
+        const result = await pool.query(query, [id, i_id, total])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function InsertHouseCosts(id, i_id, total){
+    try {
+        const query = `INSERT INTO HouseCosts (HouseID, CostID, Total)
                         VALUES (?,?,?)`
         const result = await pool.query(query, [id, i_id, total])
         return result;
@@ -375,6 +431,19 @@ export async function DeleteEmployeeCosts(id, h_id, total){
     try {
         const query = `DELETE FROM EmployeeCosts
                        WHERE EmployeeID = ? AND CostID = ? AND Total = ?`
+        const result = await pool.query(query, [id, h_id, total])
+        console.log(result)
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function DeleteHouseCosts(id, h_id, total){
+    try {
+        const query = `DELETE FROM HouseCosts
+                       WHERE HouseID = ? AND CostID = ? AND Total = ?`
         const result = await pool.query(query, [id, h_id, total])
         console.log(result)
         return result;

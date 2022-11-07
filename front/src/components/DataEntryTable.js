@@ -1,6 +1,6 @@
 import TableEntryRow from '../components/TableEntryRow';
 
-export default function DataEntryTable({headers, data, onSave, entryCells, display}){
+export default function DataEntryTable({headers, data, onSave, entryCells, display, closeWindow}){
 
     if (Object.keys(data).length < 1) {
         return (
@@ -36,7 +36,17 @@ export default function DataEntryTable({headers, data, onSave, entryCells, displ
                             row = {i}
                             key = {i}/>
                         )
-                    }                     
+                    }   
+
+                     { closeWindow !== undefined ? 
+                    <tr onClick={ () => closeWindow() } className="delete">
+                        <td colSpan={headers.length + (onSave !== undefined ? 1 : 0)}>
+                            Close Window
+                        </td>
+
+                    </tr>
+                    :
+                    null }                      
                 </tbody>
             </table>
         </div>

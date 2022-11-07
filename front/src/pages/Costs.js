@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../components/DataTable';
 import Cost from '../pages/Cost';
+import * as entities from '../scripts/entities.js'
 
 export default function Customers() {
 
     const navigate = useNavigate();
 
-    const fetchUrl = '/costs';
+    const entityName = 'Costs';
     const operandUrl = '/cost';
     const entityIdString = 'CostID';
     const tableHeaders = ["ID", "Cost Description"];
@@ -16,30 +17,17 @@ export default function Customers() {
     const [entries, setEntries] = useState([]);
     const [entryData, setEntryData] = useState((input) => {return input});
 
-    // Initial fetch of all entries
-    const getEntries = async () => {
-        await fetch(fetchUrl)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data[0])
-            setEntries(data[0]);
-        })
-        .catch(
-            setEntries["No Data Available"]
-        )       
+
+     // Initial fetch of all entries
+     const getEntries = async () => {
+        const response = await entities.get(entityName)
+        setEntries(response)       
     };
 
     // Toggle the deletion confirmation dialog.
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
-        console.log(operandUrl + "/" + id)
-        const response = await fetch(operandUrl + "/" + id, {
-            method: 'DELETE',
-            body: JSON.stringify({id:id}),
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            }
-        })
+        const response = await entities.del(entityName, id)
         if(response.ok){
             entries.forEach(entry => console.log(entry[entityIdString]))
             console.log(id)
@@ -72,18 +60,7 @@ export default function Customers() {
 
     // Submit updated information for entries
     const update = async (data) => {
-        const response = await fetch(operandUrl + "/" + data[entityIdString], {
-            method: 'PUT',
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            }        
-        })
-
-        if(!response.ok){
-            throw new Error(`Status: ${response.status}`)
-        }
- 
+        await entities.put(entityName, data[entityIdString], data); 
         const current = entries;
         current.forEach(entry => {
             entry = entry[entityIdString] === data[entityIdString] ? data : entry

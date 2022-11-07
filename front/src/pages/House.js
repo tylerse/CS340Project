@@ -42,7 +42,7 @@ export default function House({data, cancel, addNew, update}){
         let result = await entities.get("CustomerHouses", `HouseID=${HouseID}`);
         setE1(result);
 
-        result = await entities.get("HouseCosts", HouseID);
+        result = await entities.get("HouseCosts", `HouseID=${HouseID}`);
         let openPayments = 0;
         console.log(result)
         for(let i = 0; i < result.length; i++){
@@ -77,13 +77,14 @@ export default function House({data, cancel, addNew, update}){
 
     const deleteRelatedE1 = (entity) => {
         entities.del("CustomerHouses", entity.CustomerID, HouseID)
+        setE1(E1.filter(entry => entry["CustomerID"] !== entity.CustomerID))
         setEdit(false);
     }
 
     const deleteRelatedE2 = (entity) => {
-        console.log(entity)
-        entities.del("HouseCosts", HouseID, entity.CostID)
-        setEdit(false);
+        entities.del("HouseCosts", HouseID, entity.CostID, entity.Total)
+        setE2(E2.filter(entry => entry["CostID"] !== entity.CostID))
+        setEdit2(false);
     }
 
     useEffect(() => {
@@ -140,7 +141,7 @@ export default function House({data, cancel, addNew, update}){
                                     onDelete={deleteRelatedE1}
                                     canAddNew={false}
                                     canDelete={false}   
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}/> 
                                     : null}
                 <h3>Associated Costs</h3>
                 <DataTable  headers={["HouseID", "CostID", "Total", "Cost Description"]}
@@ -154,7 +155,7 @@ export default function House({data, cancel, addNew, update}){
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  
                                     entryCells={[2]}
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}/> 
                                     : null}
                 </div>
             </form> 

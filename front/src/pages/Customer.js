@@ -52,7 +52,6 @@ export default function Customer({data, cancel, addNew, update}){
 
         result = await entities.get("CustomerCosts", `CustomerID=${CustomerID}`);
         let openPayments = 0;
-        console.log(result)
         for(let i = 0; i < result.length; i++){
             console.log(result[i])
             openPayments += parseInt(result[i].Total);
@@ -83,16 +82,15 @@ export default function Customer({data, cancel, addNew, update}){
         setEdit2(true);
     }
 
-
-
     const deleteRelatedE1 = (entity) => {
         entities.del("CustomerHouses", CustomerID, entity.HouseID)
+        setE1(E1.filter(entry => entry["HouseID"] !== entity.HouseID))
         setEdit(false);
     }
 
     const deleteRelatedE2 = (entity) => {
-        console.log(entity)
         entities.del("CustomerCosts", CustomerID, entity.CostID, entity.Total)
+        setE2(E2.filter(entry => entry["CostID"] !== entity.CostID))
         setEdit(false);
     }
 
@@ -149,7 +147,7 @@ export default function Customer({data, cancel, addNew, update}){
                                     onDelete={deleteRelatedE1}
                                     canAddNew={false}
                                     canDelete={false}   
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}/> 
                                     : null}
                 <h3>Associated Costs</h3>
                 <DataTable  headers={["CustomerID", "CostID", "Total", "Cost Description"]}
@@ -163,7 +161,8 @@ export default function Customer({data, cancel, addNew, update}){
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  
                                     entryCells={[2]}
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}
+                                    closeWindow = {() => setEdit2(false)}/> 
                                     : null}
                 </div>
             </form> 

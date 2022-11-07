@@ -34,8 +34,9 @@ export default function Customer({data, cancel, addNew, update}){
             "EmployeeFirstname" : EmployeeFirstname,
             "EmployeeLastname" : EmployeeLastname,
             "EmployeeSalary" : EmployeeSalary,
-            "EmployeeBirthday" : EmployeeBirthday,
-            "EmployeeInsurance" : EmployeeInsurance
+            "EmployeeBirthday" : convertDate(EmployeeBirthday),
+            "EmployeeInsurance" : EmployeeInsurance,
+            "Employed": convertDate(Employed)
         }
         cancel(false);
         return entity;
@@ -64,9 +65,9 @@ export default function Customer({data, cancel, addNew, update}){
     }  
 
     const updateRelatedE2 = async (entity, total) => {
-        await entities.update(data, entity,"EmployeeID","CostID", total)
-        loadRelatedEntities();
         setEdit2(false);
+        await entities.update(data, entity,"EmployeeID","CostID", total)
+        loadRelatedEntities();        
     }
 
     const onEdit2 = async () => {
@@ -76,8 +77,8 @@ export default function Customer({data, cancel, addNew, update}){
 
 
     const deleteRelatedE2 = (entity) => {
-        console.log(entity)
         entities.del("EmployeeCosts", EmployeeID, entity.CostID, entity.Total)
+        setE2(E2.filter(entry => entry["CostID"] !== entity.CostID))
         setEdit(false);
     }
 
@@ -104,6 +105,11 @@ export default function Customer({data, cancel, addNew, update}){
                     <h2><b>Payment Status </b></h2> 
                         <h2>{OpenPayment === 0 ? <span color="black">CLOSED</span> : <span color="red">${OpenPayment} TO BE PAID</span>}</h2>
 
+                    <label>Birthday</label>
+                    <DatePicker
+                        selected={EmployeeBirthday}
+                        onChange={date => setEmployeeBirthday(date)}
+                    />
                     <label>Date Employed</label>
                     <DatePicker
                         selected={Employed}
@@ -133,7 +139,7 @@ export default function Customer({data, cancel, addNew, update}){
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  
                                     entryCells={[2]}
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}/> 
                                     : null}
                 </div>
             </form> 

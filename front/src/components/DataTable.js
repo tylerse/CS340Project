@@ -2,7 +2,7 @@ import { useState } from "react";
 import TableRow from '../components/TableRow';
 import ConfirmationDialog from "./ConfirmationDialog";
 
-export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display, noSelect}){
+export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display, noSelect, closeWindow}){
 
     const [confirm, setConfirm] = useState(false);
     const [targetEntry, setTargetEntry] = useState({});
@@ -66,12 +66,23 @@ export default function DataTable({headers, data, onSelect, onDelete, canAddNew,
                             key = {i}/>
                         )
                     } 
-                    { canAddNew ? <tr className="new-row" onClick={ () => onSelect() }>
-                        <td>
+                    { canAddNew ? <tr className="new-row" onClick={ () => onSelect() } >
+                        <td colSpan={headers.length + (canDelete ? 1 : 0)}>
                             + Add new entry
-                        </td>                    
+                        </td>  
+                                 
                     </tr> :
                     null  }
+
+                    { closeWindow !== undefined ? 
+                    <tr onClick={ () => closeWindow() } className="delete">
+                        <td colSpan={headers.length}>
+                            Close Window
+                        </td>
+
+                    </tr>
+                    :
+                    null }     
                     
                 </tbody>
             </table>

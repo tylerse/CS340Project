@@ -19,7 +19,6 @@ import { useRef, useEffect } from "react";
             // Text entry box
             let newCell = document.createElement('td')  
             let newInput = document.createElement("input")
-            newInput.setAttribute("type", total)
             newInput.addEventListener("input", (e) => { total.current = e.target.value;
                                                         console.log(e.target.value)
                                                         console.log(total)
@@ -28,9 +27,10 @@ import { useRef, useEffect } from "react";
             tableRow.appendChild(newCell);  
             
         
+            // Save entry select
             if(onSave !== undefined){
                 let newCell = document.createElement('td')            
-                newCell.textContent = "Save Entry";  
+                newCell.textContent = "Save";  
                 newCell.className = "save";
                 newCell.addEventListener("click", () => {
                     onSave(data, total.current);

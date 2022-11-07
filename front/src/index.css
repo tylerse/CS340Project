@@ -39,7 +39,7 @@ li .active {
 }
 
 ul :hover {
-  background-color:rgb(197, 222, 255);
+  background-color:rgb(152, 196, 253);
 }
 
 ul .active{
@@ -47,6 +47,8 @@ ul .active{
 }
 
 table {
+  border-radius: 15px;
+
   border-style: none;
   text-align: center;
   width:100%;
@@ -56,17 +58,42 @@ th {
   font-weight:normal;
   padding:5px;
   border-style: none;
+
   color:white;
   background-color: rgb(40, 152, 66);  
 }
+
+th:first-child{
+  border-top-left-radius: 15px;
+}
+
+th:last-child{
+  border-top-right-radius: 15px;
+}
+
+
 
 td {
   border-style: none;
   padding:5px;
 }
 
+tr:last-of-type > td:first-child{
+  border-bottom-left-radius: 15px;
+}
+
+tr:last-of-type > td:last-child{
+  border-bottom-right-radius: 15px;
+}
+
+
 .data-row-1{
-  background-color: rgb(235, 235, 235);
+  background-color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.data-row-2{
+  background-color: rgb(240, 240, 240);
   cursor: pointer;
 }
 
@@ -78,9 +105,7 @@ tr:hover td {
   background-color: blueviolet;
 }
 
-.data-row-2{
-  cursor: pointer;
-}
+
 
 .delete {
   color:white;
@@ -99,6 +124,7 @@ tr:hover td {
 
 .header {
   display: flex;
+  padding:10px;
   flex-direction: row;
   color:white;
   background-color: rgb(112, 174, 255);
@@ -110,16 +136,19 @@ tr:hover td {
   flex-grow: 1;
 }
 
-.header .left {
+.header > .left {
   padding-left: 15px;
+  margin-bottom: 0;
 }
 
-.header .middle {
+.header > .middle {
   text-align: center;
 }
 
-.header .right {
+.header > .right {
   text-align: right;
+  padding-right: 15px;
+  margin-bottom: 0;
 }
 
 .nav-bar {
@@ -187,7 +216,23 @@ tr:hover td {
   background-color: rgb(230, 230, 230);
   border-radius: 20px;
   border-style: groove;
-}
+} 
+
+.window-overlay {
+  position: absolute;
+  left:0;
+  right:0;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+  margin-left:auto;
+  margin-right:auto;
+  height:auto;
+  width:80%;  
+  text-align: center;
+  background-color: rgb(230, 230, 230);
+  border-radius: 20px;
+  border-style: groove;
+} 
 
 .new-row {
   cursor:pointer;
@@ -200,7 +245,15 @@ tr:hover td {
   margin-right: 10px;
 }
 
+.save:hover {
+  font-weight: bold;
+  color:white;
+  background-color: rgb(2, 145, 17);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+

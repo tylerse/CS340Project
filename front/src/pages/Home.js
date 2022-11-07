@@ -14,13 +14,15 @@ export default function Home(){
         <>
             <div className = "header">
                 <div className = "left">
-                   <h2> Welcome </h2>
+                    <span>Operations Database</span>
                 </div>
                 <div className = "middle">
-                    <h2>Living Earth Project</h2>
+                    <img src={logo} alt="logo" height="75px" />
+                    
                 </div>
                 <div className = "right">
-                    <img src={logo} alt="logo" height="100px" />
+                    <span>Internal Use Only</span>
+                    
                     
                 </div>
             </div>

@@ -28,7 +28,7 @@ export default function Investor({data, cancel, addNew, update}){
         const entity = {
             "InvestorID" : InvestorID,
             "InvestorName" : InvestorName,
-            "InvestorBirthday" : InvestorBirthday,
+            "InvestorBirthday" : convertDate(InvestorBirthday),
             "InvestAmount" : InvestAmount,
             "InvestName" : InvestName,
             "Profit" : Profit,
@@ -36,6 +36,11 @@ export default function Investor({data, cancel, addNew, update}){
         }
         cancel(false);
         return entity;
+    }
+
+    const convertDate = (date) => {
+        let ndate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+        return ndate;
     }
 
     const get = async (type) => {
@@ -46,7 +51,6 @@ export default function Investor({data, cancel, addNew, update}){
     const loadRelatedEntities = async () => {            
         let result = await entities.get("InvestorCosts", `InvestorID=${InvestorID}`);
         let openPayments = 0;
-        console.log(result)
         for(let i = 0; i < result.length; i++){
             console.log(result[i])
             openPayments += parseInt(result[i].Total);
@@ -73,8 +77,9 @@ export default function Investor({data, cancel, addNew, update}){
     }
 
     const deleteRelatedE2 = (entity) => {
-        console.log(entity)
-        entities.del("InvestorCosts", InvestorID, entity.CostID)
+        console.log(entity.Total)
+        entities.del("InvestorCosts", InvestorID, entity.CostID, entity.Total)
+        setE2(E2.filter(entry => entry["CostID"] !== entity.CostID))
         setEdit(false);
     }
 
@@ -89,12 +94,13 @@ export default function Investor({data, cancel, addNew, update}){
 
                 <fieldset className="fields">
                     <label> Investor Name </label> 
-                        <input type="text" name="InvestorName" value={InvestName} onChange={e => setInvestorName(e.target.value)}/>
+                        <input type="text" name="InvestorName" value={InvestorName} onChange={e => setInvestorName(e.target.value)}/>
                     
                     
                     <label> Invested Amount </label> 
                         <input type="text" name="InvestorAmount" value={InvestAmount} onChange={e => setInvestAmount(e.target.value)}/>
 
+                    <br/><br/>
                     <label> Investment Name </label> 
                         <input type="text" name="InvestName" value={InvestName} onChange={e => setInvestName(e.target.value)}/>
                     <br/><br/>
@@ -143,7 +149,7 @@ export default function Investor({data, cancel, addNew, update}){
                                     data ={allEntries2}
                                     onSave={updateRelatedE2}  
                                     entryCells={[2]}    
-                                    display={"overlay"}/> 
+                                    display={"window-overlay"}/> 
                                     : null}
                 </div>
             </form> 
