@@ -147,7 +147,8 @@ export default function Customer({data, cancel, addNew, update}){
                                     onDelete={deleteRelatedE1}
                                     canAddNew={false}
                                     canDelete={false}   
-                                    display={"window-overlay"}/> 
+                                    display={"window-overlay"}
+                                    closeWindow = {setEdit}/> 
                                     : null}
                 <h3>Associated Costs</h3>
                 <DataTable  headers={["CustomerID", "CostID", "Total", "Cost Description"]}
@@ -162,7 +163,7 @@ export default function Customer({data, cancel, addNew, update}){
                                     onSave={updateRelatedE2}  
                                     entryCells={[2]}
                                     display={"window-overlay"}
-                                    closeWindow = {() => setEdit2(false)}/> 
+                                    closeWindow = {setEdit2}/> 
                                     : null}
                 </div>
             </form> 

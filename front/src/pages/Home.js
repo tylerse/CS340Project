@@ -1,8 +1,7 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import '../index.css';
 import logo from '../logo.svg';
-import { useNavigate } from 'react-router-dom';
 
 export default function Home(){
     
@@ -28,32 +27,32 @@ export default function Home(){
             </div>
             <div className = "nav-bar">
                 <ul>
-                    <Link onClick={() => setActiveA(0)} to="/">
-                        <li className ={activeA === 0 ? "active" : ""}>
+                    <NavLink className={({ isActive }) => isActive ? "active" : ''} to="costs">
+                        <li>
                             Costs
                         </li>
-                    </Link>
-                    <Link onClick={() => setActiveA(1)} to="customers">
+                    </NavLink>
+                    <NavLink className={({ isActive }) => isActive ? "active" : ''} to="customers">
                         <li className ={activeA === 1 ? "active" : ""}>
                             Customers
                             
                         </li>
-                    </Link>
-                    <Link onClick={() => setActiveA(2)} to="houses">
+                    </NavLink>
+                    <NavLink className={({ isActive }) => isActive ? "active" : ''} to="houses">
                         <li className ={activeA === 2 ? "active" : ""}>
                             Houses
                         </li>
-                    </Link>
-                    <Link onClick={() => setActiveA(3)} to="investors">
+                    </NavLink>
+                    <NavLink className={({ isActive }) => isActive ? "active" : ''} to="investors">
                         <li className ={activeA === 3 ? "active" : ""}>
                             Investors
                         </li>
-                    </Link>
-                    <Link onClick={() => setActiveA(4)} to="employees">
+                    </NavLink>
+                    <NavLink className={({ isActive }) => isActive ? "active" : ''} to="employees">
                         <li className ={activeA === 4 ? "active" : ""}>
                             Employees
                         </li>
-                    </Link>
+                    </NavLink>
                     
                 </ul>
             </div>

@@ -55,7 +55,6 @@ export default function Customer({data, cancel, addNew, update}){
     const loadRelatedEntities = async () => {            
         let result = await entities.get("EmployeeCosts", `EmployeeID=${EmployeeID}`);
         let openPayments = 0;
-        console.log(result)
         for(let i = 0; i < result.length; i++){
             console.log(result[i])
             openPayments += parseInt(result[i].Total);

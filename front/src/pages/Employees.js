@@ -26,16 +26,23 @@ export default function Employees() {
     // Toggle the deletion confirmation dialog.
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
-        const response = await entities.del(entityName, id)
-        if(response.ok){
+        if(id === 'TBD') {
+            alert("New data requires a page refresh before deletion is available.")
+            navigate(0);
+        }
+        try {
+            await entities.del(entityName, id)            
+        }
+        catch (err){
+            console.log(err)
+        }
+        finally {
             entries.forEach(entry => console.log(entry[entityIdString]))
-            console.log(id)
             setEntries(entries.filter(entry => entry[entityIdString] !== id))
         }
     }
 
     const onEdit = (data) => {
-        console.log(data)
         setEntryData(data)
         toggleEdit(true)
     }
@@ -48,13 +55,14 @@ export default function Employees() {
                 "Content-Type": "application/json;charset=utf-8"
             }        
         })
-        if(!response.ok){
+        if(response.ok){
+            data[entityIdString] = 'TBD';
+            setEntries(entries => 
+                [...entries, data]
+            );            
+        } else {
             throw new Error(`Status: ${response.status}`)
-        }
-  
-        setEntries(entries => 
-          [...entries, data]
-        );
+        }    
     }
 
     // Submit updated information for entries

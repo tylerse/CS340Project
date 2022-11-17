@@ -41,6 +41,13 @@ app.get("/costs", function (req, res) {
     })
 })
 
+app.put("/cost/:id", function(req, res) {
+  const id = req.params.id
+  console.log("Received updated cost information.")
+  const response = sql.UpdateCost(id, req.body);
+  res.send(response);
+})
+
 app.post("/cost", function(req, res) {
   console.log("Received new cost information.")
   console.log(req.body)
@@ -128,6 +135,19 @@ app.put("/house/:id", function(req, res) {
   res.send(response);
 })
 
+app.delete("/house/:id", function (req, res) {
+  const id = req.params.id
+   console.log(`Receieved request to delete house with ID ${id}`)
+   sql.DeleteHouse(id)
+   .then(response => {
+     res.send(response);
+   })
+   .catch(err => {
+     console.log(err);
+     res.sendStatus(500);
+   })
+ })
+
 app.get("/housecosts/", function (req, res) {
   const id = req.query.HouseID
   console.log(`Received request for Costs related to house ID #${id}`)
@@ -192,13 +212,31 @@ app.get("/investors", function (req, res) {
     })
 });
 
+app.post("/investor", function(req, res) {
+  console.log("Received new ivnestor information.")
+  const response = sql.CreateNewInvestor(req.body);
+  res.send(response);
+})
+
 app.put("/investor/:id", function(req, res) {
   const id = req.params.id
   console.log("Received updated investor information.")
-  console.log(req.body)
   const response = sql.UpdateInvestor(id, req.body);
   res.send(response);
 })
+
+app.delete("/investor/:id", function (req, res) {
+  const id = req.params.id
+   console.log(`Receieved request to delete investor with ID ${id}`)
+   sql.DeleteInvestor(id)
+   .then(response => {
+     res.send(response);
+   })
+   .catch(err => {
+     console.log(err);
+     res.sendStatus(500);
+   })
+ })
 
 app.get("/investorcosts/", function (req, res) {
 
@@ -283,6 +321,12 @@ app.get("/employees", function (req, res) {
     })
 });
 
+app.post("/employee", function(req, res) {
+  console.log("Received new employee information.")
+  const response = sql.CreateNewEmployee(req.body);
+  res.send(response);
+})
+
 app.put("/employee/:id", function(req, res) {
   const id = req.params.id
   console.log("Received updated employee information.")
@@ -290,6 +334,19 @@ app.put("/employee/:id", function(req, res) {
   const response = sql.UpdateEmployee(id, req.body);
   res.send(response);
 })
+
+app.delete("/employee/:id", function (req, res) {
+  const id = req.params.id
+   console.log(`Receieved request to delete employee with ID ${id}`)
+   sql.DeleteEmployee(id)
+   .then(response => {
+     res.send(response);
+   })
+   .catch(err => {
+     console.log(err);
+     res.sendStatus(500);
+   })
+ })
 
 app.get("/employeecosts/", function (req, res) {
 

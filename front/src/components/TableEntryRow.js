@@ -5,7 +5,6 @@ import { useRef, useEffect } from "react";
     const total = useRef(0);
 
     const rowId = Math.random(0,1000) + row
-    console.log(data)
     const loadTable = () => {
         const tableRow = document.getElementById(rowId);
         tableRow.className = row % 2 === 0 ? "data-row-1" : "data-row-2";

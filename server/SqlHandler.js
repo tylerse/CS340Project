@@ -69,7 +69,7 @@ export async function GetAllEmployees() {
 export async function CreateNewCustomer(data){
     try {
         const query = `INSERT INTO Customers (CustomerFirstname, CustomerLastname, Paid, HouseOrdered)
-                        VALUES (?,?,?,?,?)`
+                        VALUES (?,?,?,?)`
         const result = await pool.query(query, [
             data["CustomerFirstname"],
             data["CustomerLastname"],
@@ -83,6 +83,8 @@ export async function CreateNewCustomer(data){
         return {"Error": "Error processing request"}
     } 
 }
+
+
 
 export async function CreateNewHouse(data){
     try {
@@ -101,12 +103,69 @@ export async function CreateNewHouse(data){
     } 
 }
 
+export async function CreateNewInvestor(data){
+    try {
+        const query = `INSERT INTO Investors (InvestorName, InvestorBirthday, InvestAmount, InvestName, Profit, ProfitName)
+                        VALUES (?,?,?,?,?,?)`
+        const result = await pool.query(query, [
+            data["InvestorName"],
+            data["InvestorBirthday"],
+            data["InvestAmount"],
+            data["InvestName"],
+            data["Profit"],
+            data["ProfitName"]
+        ])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+        return {"Error": "Error processing request"}
+    } 
+}
+
+export async function CreateNewEmployee(data){
+    try {
+        const query = `INSERT INTO Employees (EmployeeFirstname, EmployeeLastname, EmployeeSalary, EmployeeInsurance, EmployeeBirthday, Employed)
+                        VALUES (?,?,?,?,?,?)`
+        const result = await pool.query(query, [
+            data["EmployeeFirstname"],
+            data["EmployeeLastname"],
+            data["EmployeeSalary"],
+            data["EmployeeInsurance"],
+            data["EmployeeBirthday"],
+            data["Employed"]
+        ])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+        return {"Error": "Error processing request"}
+    } 
+}
+
 export async function CreateNewCost(data){
     try {
         const query = `INSERT INTO Costs (CostDescription)
                         VALUES (?)`
         const result = await pool.query(query, [
             data["CostDescription"]
+        ])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+        return {"Error": "Error processing request"}
+    } 
+}
+
+export async function UpdateCost(id, data){
+    try {
+        const query = `UPDATE Costs
+                        SET CostDescription = ?
+                        WHERE CostID = ?`
+        const result = await pool.query(query, [
+            data["CostDescription"],
+            id
         ])
         return result;
     }
@@ -222,6 +281,40 @@ export async function DeleteCustomer(id){
         console.log(err)
     }
 }
+
+export async function DeleteHouse(id){
+    try {
+        const query = 'DELETE FROM Houses WHERE HouseID = ?'
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function DeleteInvestor(id){
+    try {
+        const query = 'DELETE FROM Investors WHERE InvestorID = ?'
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export async function DeleteEmployee(id){
+    try {
+        const query = 'DELETE FROM Employees WHERE EmployeeID = ?'
+        const result = await pool.query(query, [id])
+        return result;
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
 
 export async function InsertInvestorCosts(id, i_id, total){
     try {

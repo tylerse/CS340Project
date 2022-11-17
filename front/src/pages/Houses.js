@@ -26,6 +26,10 @@ export default function Houses() {
     // Toggle the deletion confirmation dialog.
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
+        if(id === 'TBD') {
+            alert("New data requires a page refresh before deletion is available.")
+            navigate(0);
+        }
         const response = await entities.del(entityName, id)
         if(response.ok){
             entries.forEach(entry => console.log(entry[entityIdString]))
@@ -50,7 +54,7 @@ export default function Houses() {
         if(!response.ok){
             throw new Error(`Status: ${response.status}`)
         }
-  
+        data[entityIdString] = 'TBD';
         setEntries(entries => 
           [...entries, data]
         );

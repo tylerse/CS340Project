@@ -39,7 +39,7 @@ export default function DataEntryTable({headers, data, onSave, entryCells, displ
                     }   
 
                      { closeWindow !== undefined ? 
-                    <tr onClick={ () => closeWindow() } className="delete">
+                    <tr onClick={ () => closeWindow(false) } className="delete">
                         <td colSpan={headers.length + (onSave !== undefined ? 1 : 0)}>
                             Close Window
                         </td>

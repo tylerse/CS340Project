@@ -52,7 +52,6 @@ export default function Investor({data, cancel, addNew, update}){
         let result = await entities.get("InvestorCosts", `InvestorID=${InvestorID}`);
         let openPayments = 0;
         for(let i = 0; i < result.length; i++){
-            console.log(result[i])
             openPayments += parseInt(result[i].Total);
         }
         setOpenPayment(openPayments)
@@ -98,7 +97,7 @@ export default function Investor({data, cancel, addNew, update}){
                     
                     
                     <label> Invested Amount </label> 
-                        <input type="text" name="InvestorAmount" value={InvestAmount} onChange={e => setInvestAmount(e.target.value)}/>
+                        <input type="number" name="InvestorAmount" value={InvestAmount} onChange={e => setInvestAmount(e.target.value)}/>
 
                     <br/><br/>
                     <label> Investment Name </label> 
@@ -106,7 +105,7 @@ export default function Investor({data, cancel, addNew, update}){
                     <br/><br/>
 
                     <label> Profit </label> 
-                        <input type="text" name="Profit" value={Profit} onChange={e => setProfit(e.target.value)}/>
+                        <input type="number" name="Profit" value={Profit} onChange={e => setProfit(e.target.value)}/>
 
                     <label> Profit Name </label> 
                         <input type="text" name="ProfitName" value={ProfitName} onChange={e => setProfitName(e.target.value)}/>

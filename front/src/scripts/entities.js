@@ -90,7 +90,7 @@ export const get = async (type, e_id) => {
         default:
             return {Error: "Could not process request get request"};
     }
-    response.ok ? console.log("Posted OK") : console.log("Error getting information from server") 
+    response.ok ? console.log("Fetch OK") : console.log("Error getting information from server") 
     const data = await response.json();
     return data[0];
 }
@@ -151,7 +151,7 @@ export const del = async (type, e1_id, e2_id, total) => {
         default:
             return {Error: "Could not process request get request"};
     }
-    response.ok ? console.log("Posted OK") : console.log("Error getting information from server") 
+    //response.ok ? console.log("Posted OK") : console.log("Error getting information from server") 
     const data = await response.json();
     return data[0];
 }

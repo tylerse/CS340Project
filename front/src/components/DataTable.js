@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TableRow from '../components/TableRow';
 import ConfirmationDialog from "./ConfirmationDialog";
 
-export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display, noSelect, closeWindow}){
+export default function DataTable({headers, data, onSelect, onDelete, canAddNew, canDelete, display, noSelect, closeWindow, onSave}){
 
     const [confirm, setConfirm] = useState(false);
     const [targetEntry, setTargetEntry] = useState({});
+    const [refresh, setRefresh] = useState(false);
 
     const confirmDelete = () => {
         onDelete(targetEntry)
         setConfirm(false);
     }
+
+    useEffect(() => {
+        setRefresh(refresh => !refresh);
+    }, [data])
 
     if (Object.keys(data).length < 1) {
         return (
@@ -75,14 +80,14 @@ export default function DataTable({headers, data, onSelect, onDelete, canAddNew,
                     null  }
 
                     { closeWindow !== undefined ? 
-                    <tr onClick={ () => closeWindow() } className="delete">
-                        <td colSpan={headers.length}>
+                    <tr onClick={ () => closeWindow(false) } className="delete">
+                        <td colSpan={headers.length + (onSave !== undefined ? 1 : 0)}>
                             Close Window
                         </td>
 
                     </tr>
                     :
-                    null }     
+                    null }          
                     
                 </tbody>
             </table>

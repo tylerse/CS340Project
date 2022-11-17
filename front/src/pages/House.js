@@ -44,7 +44,6 @@ export default function House({data, cancel, addNew, update}){
 
         result = await entities.get("HouseCosts", `HouseID=${HouseID}`);
         let openPayments = 0;
-        console.log(result)
         for(let i = 0; i < result.length; i++){
             console.log(result[i])
             openPayments += parseInt(result[i].Total);

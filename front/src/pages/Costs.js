@@ -36,7 +36,6 @@ export default function Customers() {
     }
 
     const onEdit = (data) => {
-        console.log(data)
         setEntryData(data)
         toggleEdit(true)
     }
@@ -52,7 +51,7 @@ export default function Customers() {
         if(!response.ok){
             throw new Error(`Status: ${response.status}`)
         }
-  
+        data["CostID"] = 'TBD';
         setEntries(entries => 
           [...entries, data]
         );
@@ -61,14 +60,12 @@ export default function Customers() {
     // Submit updated information for entries
     const update = async (data) => {
         await entities.put(entityName, data[entityIdString], data); 
-        const current = entries;
-        current.forEach(entry => {
-            entry = entry[entityIdString] === data[entityIdString] ? data : entry
-        })
-        setEntries(current);
-        navigate(0);
+        setEntries(entries => entries.map(entry => {
+            return entry[entityIdString] === data[entityIdString] ? data : entry;
+        }));       
+        navigate(0); 
     }
-
+    
     useEffect(() => {
         getEntries();
     }, []);

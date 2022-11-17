@@ -32,12 +32,6 @@ li {
   text-align: center;
 }
 
-li .active {
-  background-color:rgb(33, 129, 255);
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-}
-
 ul :hover {
   background-color:rgb(152, 196, 253);
 }
@@ -86,6 +80,9 @@ tr:last-of-type > td:last-child{
   border-bottom-right-radius: 15px;
 }
 
+.active > li {
+  background-color:rgb(33, 129, 255);
+}
 
 .data-row-1{
   background-color: rgb(255, 255, 255);
@@ -112,10 +109,6 @@ tr:hover td {
   font-weight: bolder;
   background-color: rgb(203, 0, 0);
   cursor: pointer;
-}
-
-.delete :hover {
-  pointer-events: none;
 }
 
 .delete :hover {
@@ -163,8 +156,10 @@ tr:hover td {
 }
 
 .confirmation-overlay {
-  background-color: rgba(0,0,0,150);
-  
+  background-color: rgba(0,0,0,.7);
+  left: 0;
+  top: 0;
+  position:fixed;
   margin: 0;
   width: 100%;
   height: 100%;
@@ -173,9 +168,9 @@ tr:hover td {
 .confirmation-dialog {
   text-align: center;
   color:rgb(255, 255, 255);
-  background-color: rgb(59, 146, 200);
-  position: absolute;
-  margin:auto;
+  background-color: rgb(67, 120, 169);
+  position: fixed;
+  top: 30%;
   height:auto;
   width:80%;
   border-radius: 20px;
@@ -186,9 +181,9 @@ tr:hover td {
   font-size: larger;
   font-weight: bolder;
   padding: 10px 0px 10px 0px;
-  border-radius: 15px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-top: 15px;
+  margin: 15px 10px 10px 10px;
 }
 
 .confirmation-dialog > .confirm:hover, .confirmation-dialog > .cancel:hover {
@@ -245,11 +240,19 @@ tr:hover td {
   margin-right: 10px;
 }
 
-.save:hover {
+.save {
+  background-color: rgb(86, 162, 224);
   font-weight: bold;
   color:white;
+}
+
+.save:hover {
+  
+
   background-color: rgb(2, 145, 17);
 }
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
