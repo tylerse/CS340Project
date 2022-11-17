@@ -133,7 +133,8 @@ export default function House({data, cancel, addNew, update}){
                             onSelect={onEdit} 
                             onDelete={deleteRelatedE1} 
                             canDelete={true} 
-                            canAddNew={true}/>
+                            canAddNew={true}
+                            noSelect={true}/>
                 {edit ? <DataTable  headers={["Customer ID", "CustomerFirstname", "CustomerLastname", "Paid Date", "House Ordered Date"]}
                                     data ={allEntries}
                                     onSelect={updateRelatedE1}

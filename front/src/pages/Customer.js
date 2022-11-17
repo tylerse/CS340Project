@@ -140,7 +140,8 @@ export default function Customer({data, cancel, addNew, update}){
                             onSelect={onEdit} 
                             onDelete={deleteRelatedE1} 
                             canDelete={true} 
-                            canAddNew={true}/>
+                            canAddNew={true}
+                            noSelect={true}/>
                 {edit ? <DataTable  headers={["House ID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
                                     data ={allEntries}
                                     onSelect={updateRelatedE1}

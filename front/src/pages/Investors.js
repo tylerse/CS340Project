@@ -23,7 +23,7 @@ export default function Investors() {
         setEntries(response)       
     };
 
-    // Toggle the deletion confirmation dialog.
+    // Delete the entry after confirmation
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
         if(id === 'TBD') {
@@ -79,6 +79,7 @@ export default function Investors() {
         navigate(0);
     }
 
+    // Get entries on load
     useEffect(() => {
         getEntries();
     }, []);
@@ -89,7 +90,14 @@ export default function Investors() {
             {edit ? <Investor data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
 
             <div id="browse">
-                <p><strong>Investors</strong></p>
+                <div className = 'browse-header'>
+                    <div className='left'>
+                        <p><i className="italics">&nbsp;&nbsp; Edit and/or update entries by clicking anywhere within the row.</i></p>
+                    </div>
+                    <div className='right'>
+                        
+                    </div>
+                </div>
                 < DataTable 
                     headers={tableHeaders}
                     data={entries} 
@@ -98,7 +106,6 @@ export default function Investors() {
                     onDelete={ onDelete } 
                     canAddNew={ true }
                     canDelete={ true }/>
-                <p>&nbsp;</p>
             </div>
         </div>
     )

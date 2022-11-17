@@ -16,14 +16,16 @@ export default function Customers() {
     const [edit, toggleEdit] = useState(false);
     const [entries, setEntries] = useState([]);
     const [entryData, setEntryData] = useState((input) => {return input});
+    const [modEntries, setModEntries] = useState([]);
 
     // Initial fetch of all entries
     const getEntries = async () => {
         const response = await entities.get(entityName)
-        setEntries(response)       
+        setEntries(response)     
+        setModEntries(response);  
     };
 
-    // Toggle the deletion confirmation dialog.
+    // Delete the entry after confirmation
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
         if(id === 'TBD') {
@@ -77,26 +79,66 @@ export default function Customers() {
         setEntries(current);
     }
 
+    // Get entries on load
     useEffect(() => {
         getEntries();
     }, []);
 
+    // search functionality
+    const search = async (searchEntry) => {
+
+        // trim whitespace and split terms at whitespace into array
+        const terms = searchEntry.toUpperCase().trim().split(/\s+/);
+
+        // check if relevant fields match any terms, count number of matches.
+        const mod = entries.filter(function(e) {
+            let match = 0;
+            terms.forEach(term => {
+                match += e.CustomerFirstname.toUpperCase().includes(term) ||
+                        e.CustomerLastname.toUpperCase().includes(term) ||
+                        e.Paid.includes(term) ||
+                        e.HouseOrdered.includes(term) ? 1 : 0;
+            });
+
+            // return entries where terms entered is equal to matches, so that e.g. first + last name both match,
+            // instead of returning all matches for all terms.
+            return match === terms.length ? e : null;
+        });
+        
+        setModEntries([])
+        // await setting blank array
+        await new Promise(resolve => {
+            resolve(setModEntries([]))
+           
+        });                        
+        
+        // set array to matches after await promise to reset table.
+        setModEntries(mod.length > 0 ? mod : [])
+    }
+
     return (        
-        <div className = "content">
+        <div className = "content">           
 
             {edit ? <Customer data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
 
             <div id="browse">
-                <p><strong>Customers</strong></p>
+                <div className = 'browse-header'>
+                        <div className='left'>
+                            <p><i className="italics">&nbsp;&nbsp; Edit and/or update entries by clicking anywhere within the row.</i></p>
+                        </div>
+                        <div className='right'>
+                            <input type="search" placeholder="Search..." onChange={e => search(e.target.value)}></input>
+                        </div>
+                    </div>
+                
                 < DataTable 
                     headers={tableHeaders}
-                    data={entries} 
+                    data={modEntries} 
                     name={"entries"} 
                     onSelect={ onEdit } 
                     onDelete={ onDelete } 
                     canAddNew={ true }
                     canDelete={ true }/>
-                <p>&nbsp;</p>
             </div>
         </div>
     )

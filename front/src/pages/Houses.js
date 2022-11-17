@@ -23,7 +23,7 @@ export default function Houses() {
         setEntries(response)       
     };
 
-    // Toggle the deletion confirmation dialog.
+    // Delete the entry after confirmation
     const onDelete = async (entry) => {
         const id = entry[entityIdString];
         if(id === 'TBD') {
@@ -71,6 +71,7 @@ export default function Houses() {
         navigate(0);
     }
 
+    // Get entries on load
     useEffect(() => {
         getEntries();
     }, []);
@@ -81,7 +82,14 @@ export default function Houses() {
             {edit ? <House data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
 
             <div id="browse">
-                <p><strong>Houses</strong></p>
+                <div className = 'browse-header'>
+                    <div className='left'>
+                        <p><i className="italics">&nbsp;&nbsp; Edit and/or update entries by clicking anywhere within the row.</i></p>
+                    </div>
+                    <div className='right'>  
+
+                    </div>
+                </div>
                 < DataTable 
                     headers={tableHeaders}
                     data={entries} 
@@ -89,8 +97,8 @@ export default function Houses() {
                     onSelect={ onEdit } 
                     onDelete={ onDelete } 
                     canAddNew={ true }
-                    canDelete={ true }/>
-                <p>&nbsp;</p>
+                    canDelete={ true }
+                    boolCells = {[2,3]}/>
             </div>
         </div>
     )

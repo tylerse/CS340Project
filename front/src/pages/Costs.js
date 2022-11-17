@@ -66,6 +66,7 @@ export default function Customers() {
         navigate(0); 
     }
     
+    // Get entries on load
     useEffect(() => {
         getEntries();
     }, []);
@@ -76,7 +77,14 @@ export default function Customers() {
             {edit ? <Cost data= {entryData} cancel = { toggleEdit } addNew ={ addNew } update={ update }/> : null}
 
             <div id="browse">
-                <p><strong>Costs</strong></p>
+                <div className = 'browse-header'>
+                    <div className='left'>
+                        <p><i className="italics">&nbsp;&nbsp; Edit and/or update entries by clicking anywhere within the row.</i></p>
+                    </div>
+                    <div className='right'>
+                        
+                    </div>
+                </div>
                 < DataTable 
                     headers={tableHeaders}
                     data={entries} 
@@ -85,7 +93,6 @@ export default function Customers() {
                     onDelete={ onDelete } 
                     canAddNew={ true }
                     canDelete={ false }/>
-                <p>&nbsp;</p>
             </div>
         </div>
     )

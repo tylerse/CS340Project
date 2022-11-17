@@ -115,6 +115,7 @@ tr:hover td {
   background-color: red;
 }
 
+
 .header {
   display: flex;
   padding:10px;
@@ -142,6 +143,31 @@ tr:hover td {
   text-align: right;
   padding-right: 15px;
   margin-bottom: 0;
+}
+
+.browse-header {
+  display: flex;
+  padding:10px;
+  flex-direction: row;
+}
+
+.left, .middle, .right {
+  margin:auto;
+  display: flexbox;
+  flex-grow: 1;
+}
+
+.left {
+  margin-bottom: 0;
+}
+
+.right {
+  text-align: right;
+  padding-right:15px;
+}
+
+.right > input {
+  width: 100%;
 }
 
 .nav-bar {
@@ -252,7 +278,22 @@ tr:hover td {
   background-color: rgb(2, 145, 17);
 }
 
+.italics {
+  text-align: right;
+  color:gray;
+}
 
+.browse-header {
+  display: flex;
+  padding:10px;
+  flex-direction: row;
+}
+
+.browse-header > .right {
+  display: flex;
+  justify-content: right;
+  text-align: right;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
