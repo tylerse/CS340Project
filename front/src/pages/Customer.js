@@ -141,7 +141,8 @@ export default function Customer({data, cancel, addNew, update}){
                             onDelete={deleteRelatedE1} 
                             canDelete={true} 
                             canAddNew={true}
-                            noSelect={true}/>
+                            noSelect={true}
+                            boolCells={[3,4]}/>
                 {edit ? <DataTable  headers={["House ID", "House Size", "Patio Upgrade", "Garage Upgrade"]}
                                     data ={allEntries}
                                     onSelect={updateRelatedE1}
@@ -149,7 +150,8 @@ export default function Customer({data, cancel, addNew, update}){
                                     canAddNew={false}
                                     canDelete={false}   
                                     display={"window-overlay"}
-                                    closeWindow = {setEdit}/> 
+                                    closeWindow = {setEdit}
+                                    boolCells={[2,3]}/> 
                                     : null}
                 <h3>Associated Costs</h3>
                 <DataTable  headers={["CustomerID", "CostID", "Total", "Cost Description"]}
